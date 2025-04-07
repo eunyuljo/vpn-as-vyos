@@ -1,31 +1,3 @@
-# ────────────────────────────────────────────
-# IAM Role for SSM
-# ────────────────────────────────────────────
-resource "aws_iam_role" "vyos_ssm_role" {
-  name = "VyOS-SSM-Role"
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        },
-        Action = "sts:AssumeRole"
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "ssm_core_attach" {
-  role       = aws_iam_role.vyos_ssm_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-}
-
-resource "aws_iam_instance_profile" "vyos_instance_profile" {
-  name = "VyOS-SSM-Instance-Profile"
-  role = aws_iam_role.vyos_ssm_role.name
-}
 
 
 resource "aws_security_group" "vyos_sg" {
@@ -85,7 +57,7 @@ resource "aws_eip" "vyos_eip" {
 
 # ENI 생성
 resource "aws_network_interface" "vyos_eni" {
-  subnet_id         = aws_subnet.vyos_subnet.id
+  subnet_id         = aws_subnet.vyos_public_subnet.id
   security_groups   = [aws_security_group.vyos_sg.id]
   source_dest_check = false
 
@@ -100,9 +72,7 @@ resource "aws_instance" "vyos" {
   ami                         = "ami-02f26353a98d466a5"
   instance_type               = "t3.medium"
   key_name                    = "fnf-test"
-  iam_instance_profile        = aws_iam_instance_profile.vyos_instance_profile.name
   
-
   network_interface {
     network_interface_id = aws_network_interface.vyos_eni.id
     device_index         = 0
