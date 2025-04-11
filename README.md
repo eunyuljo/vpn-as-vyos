@@ -12,3 +12,8 @@
 ### VPN 이중화 구성 및 Fail-Over 기능 확인
 
 ![Image](https://github.com/user-attachments/assets/ab0dccef-9d95-4b74-8eb5-1248840918bd)
+
+
+### 명령어 및 참고 문서
+
+    obsidian : VyOS 를 통한 VPN 설정
